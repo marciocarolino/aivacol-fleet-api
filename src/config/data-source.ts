@@ -18,7 +18,9 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 
   entities: [UserTypeOrmEntity],
 
-  synchronize: true,
+  migrations: ['src/database/migrations/*.ts'],
+
+  synchronize: false,
 
   options: {
     encrypt: false,
