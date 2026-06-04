@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { UserEntity } from '../../../domain/users/entities/user.entity';
 import type { UserRepository } from '../../../domain/users/repositories/user.repository';
@@ -9,7 +9,10 @@ import { AppException } from '../../../shared/exceptions/app.exception';
 @Injectable()
 export class CreateUserUseCase {
   constructor(
+    @Inject('UserRepository')
     private readonly userRepository: UserRepository,
+
+    @Inject('PasswordHashService')
     private readonly passwordHashService: PasswordHashService,
   ) {}
 
