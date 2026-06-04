@@ -1,5 +1,5 @@
 import { UserEntity } from '../../../domain/users/entities/user.entity';
-import { UserTypeOrmEntity } from '../../persistence/user.typeorm-entity';
+import { UserTypeOrmEntity } from '../persistence/user.typeorm-entity';
 
 export class UserMapper {
   static toPersistence(user: UserEntity): UserTypeOrmEntity {

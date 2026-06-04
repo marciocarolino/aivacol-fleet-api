@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { BaseTypeOrmEntity } from '../../shared/persistence/base.typeorm-entity';
+import { BaseTypeOrmEntity } from '../../../shared/persistence/base.typeorm-entity';
 
 @Entity('users')
 export class UserTypeOrmEntity extends BaseTypeOrmEntity {
