@@ -17,7 +17,7 @@ const AppDataSource = new DataSource({
 
   entities: [UserTypeOrmEntity],
 
-  migrations: ['src/database/migrations/*.ts'],
+  // migrations: ['src/database/migrations/*.ts'],
 
   synchronize: false,
 
