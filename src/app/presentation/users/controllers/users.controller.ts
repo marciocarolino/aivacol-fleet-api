@@ -1,15 +1,28 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserUseCase } from '../../../application/users/use-cases/create-user.use-case';
+import { GetUserByIdUseCase } from '../../../application/users/use-cases/get-user-by-id.use-case';
+
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserResponseMapper } from '../mappers/user-response.mapper';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly createUserUseCase: CreateUserUseCase) {}
+  constructor(
+    private readonly createUserUseCase: CreateUserUseCase,
+    private readonly getUserByIdUseCase: GetUserByIdUseCase,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -26,6 +39,31 @@ export class UsersController {
   })
   async create(@Body() dto: CreateUserDto) {
     const user = await this.createUserUseCase.execute(dto);
+
+    return UserResponseMapper.toResponse(user);
+  }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Get user by id',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'User id',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User found successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  async findById(@Param('id') id: string) {
+    const user = await this.getUserByIdUseCase.execute({
+      id,
+    });
 
     return UserResponseMapper.toResponse(user);
   }

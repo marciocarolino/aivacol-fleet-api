@@ -6,6 +6,7 @@ import { TypeOrmUserRepository } from './repositories/typeorm-user.repository';
 import { BcryptPasswordHashService } from '../../domain/users/services/bcrypt-password-hash.service';
 import { CreateUserUseCase } from '../../application/users/use-cases/create-user.use-case';
 import { UsersController } from '../../presentation/users/controllers/users.controller';
+import { GetUserByIdUseCase } from '../../application/users/use-cases/get-user-by-id.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserTypeOrmEntity])],
@@ -14,6 +15,7 @@ import { UsersController } from '../../presentation/users/controllers/users.cont
     TypeOrmUserRepository,
     BcryptPasswordHashService,
     CreateUserUseCase,
+    GetUserByIdUseCase,
 
     {
       provide: 'UserRepository',
