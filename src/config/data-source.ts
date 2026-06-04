@@ -1,9 +1,9 @@
 import 'dotenv/config';
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 import { UserTypeOrmEntity } from '../app/modules/persistence/user.typeorm-entity';
 
-export const typeOrmConfig: TypeOrmModuleOptions = {
+export const AppDataSource = new DataSource({
   type: 'mssql',
 
   host: process.env.DB_HOST,
@@ -26,4 +26,4 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     encrypt: false,
     trustServerCertificate: true,
   },
-};
+});
