@@ -1,9 +1,8 @@
 import 'dotenv/config';
 import { DataSource } from 'typeorm';
+import { UserTypeOrmEntity } from '../app/modules/users/persistence/user.typeorm-entity';
 
-import { UserTypeOrmEntity } from '../app/modules/persistence/user.typeorm-entity';
-
-export const AppDataSource = new DataSource({
+const AppDataSource = new DataSource({
   type: 'mssql',
 
   host: process.env.DB_HOST,
@@ -27,3 +26,5 @@ export const AppDataSource = new DataSource({
     trustServerCertificate: true,
   },
 });
+
+export default AppDataSource;
