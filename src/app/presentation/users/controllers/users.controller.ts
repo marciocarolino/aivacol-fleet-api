@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserUseCase } from '../../../application/users/use-cases/create-user.use-case';
 import { CreateUserDto } from '../dtos/create-user.dto';
+import { UserResponseMapper } from '../mappers/user-response.mapper';
 
 @ApiTags('Users')
 @Controller('users')
@@ -24,6 +25,8 @@ export class UsersController {
     description: 'User already exists',
   })
   async create(@Body() dto: CreateUserDto) {
-    return this.createUserUseCase.execute(dto);
+    const user = await this.createUserUseCase.execute(dto);
+
+    return UserResponseMapper.toResponse(user);
   }
 }
