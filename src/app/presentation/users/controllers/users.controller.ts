@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -15,8 +16,10 @@ import { CreateUserUseCase } from '../../../application/users/use-cases/create-u
 import { GetUserByIdUseCase } from '../../../application/users/use-cases/get-user-by-id.use-case';
 import { GetUserByEmailUseCase } from '../../../application/users/use-cases/get-user-by-email.use-case';
 import { DeleteUserUseCase } from '../../../application/users/use-cases/delete-user.use-case';
+import { UpdateUserUseCase } from '../../../application/users/use-cases/update-user.use-case';
 
 import { CreateUserDto } from '../dtos/create-user.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 
 import { UserResponseMapper } from '../mappers/user-response.mapper';
 import { EmailValidationPipe } from '../../../shared/pipes/email-validation.pipe';
@@ -29,6 +32,7 @@ export class UsersController {
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
     private readonly getUserByEmailUseCase: GetUserByEmailUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
   ) {}
 
   @Post()
@@ -121,5 +125,35 @@ export class UsersController {
     await this.deleteUserUseCase.execute({
       id,
     });
+  }
+
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Update user',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'User id',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User updated successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'User already exists',
+  })
+  async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    const user = await this.updateUserUseCase.execute({
+      id,
+      ...dto,
+    });
+
+    return UserResponseMapper.toResponse(user);
   }
 }

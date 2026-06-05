@@ -9,6 +9,7 @@ import { UsersController } from '../../presentation/users/controllers/users.cont
 import { GetUserByIdUseCase } from '../../application/users/use-cases/get-user-by-id.use-case';
 import { GetUserByEmailUseCase } from '../../application/users/use-cases/get-user-by-email.use-case';
 import { DeleteUserUseCase } from '../../application/users/use-cases/delete-user.use-case';
+import { UpdateUserUseCase } from '../../application/users/use-cases/update-user.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserTypeOrmEntity])],
@@ -20,6 +21,7 @@ import { DeleteUserUseCase } from '../../application/users/use-cases/delete-user
     GetUserByIdUseCase,
     GetUserByEmailUseCase,
     DeleteUserUseCase,
+    UpdateUserUseCase,
 
     {
       provide: 'UserRepository',
