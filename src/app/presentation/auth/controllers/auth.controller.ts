@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -14,6 +15,12 @@ export class AuthController {
 
   @Post('login')
   @Public()
+  @Throttle({
+    short: {
+      limit: 5,
+      ttl: 60000,
+    },
+  })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Authenticate user',
