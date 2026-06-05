@@ -34,7 +34,11 @@ import { VehiclesModule } from './app/modules/vehicles/vehicles.module';
       envFilePath: '.env',
     }),
 
-    TypeOrmModule.forRoot(AppDataSource.options),
+    TypeOrmModule.forRoot({
+      ...AppDataSource.options,
+      migrations: [],
+    }),
+
     AuthModule,
     UsersModule,
     ModelsModule,

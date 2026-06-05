@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { DataSource } from 'typeorm';
+
 import { UserTypeOrmEntity } from '../app/modules/users/persistence/user.typeorm-entity';
 import { ModelTypeOrmEntity } from '../app/modules/models/persistence/model.typeorm-entity';
 import { VehicleTypeOrmEntity } from '../app/modules/vehicles/persistence/vehicle.typeorm-entity';
@@ -19,7 +20,7 @@ const AppDataSource = new DataSource({
 
   entities: [UserTypeOrmEntity, ModelTypeOrmEntity, VehicleTypeOrmEntity],
 
-  // migrations: ['src/database/migrations/*.ts'],
+  migrations: ['src/database/migrations/*.ts'],
 
   synchronize: false,
 
