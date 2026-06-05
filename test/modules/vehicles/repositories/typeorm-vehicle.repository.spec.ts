@@ -1,0 +1,133 @@
+import { VehicleEntity } from '../../../../src/app/domain/vehicles/entities/vehicle.entity';
+import { VehicleTypeOrmEntity } from '../../../../src/app/modules/vehicles/persistence/vehicle.typeorm-entity';
+import { TypeOrmVehicleRepository } from '../../../../src/app/modules/vehicles/repositories/typeorm-vehicle.repository';
+
+describe('TypeOrmVehicleRepository', () => {
+  const repository = {
+    save: jest.fn(),
+    findOne: jest.fn(),
+    count: jest.fn(),
+    delete: jest.fn(),
+  };
+
+  let typeOrmVehicleRepository: TypeOrmVehicleRepository;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    typeOrmVehicleRepository = new TypeOrmVehicleRepository(
+      repository as never,
+    );
+  });
+
+  function makePersistence(): VehicleTypeOrmEntity {
+    return Object.assign(new VehicleTypeOrmEntity(), {
+      id: 'vehicle-id',
+      licensePlate: 'ABC1234',
+      chassis: 'chassis',
+      renavam: 'renavam',
+      year: 2024,
+      modelId: 'model-id',
+      createdBy: 'system',
+      createdAt: new Date('2026-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2026-01-02T00:00:00.000Z'),
+    });
+  }
+
+  it('should save a vehicle using TypeORM repository', async () => {
+    const persistence = makePersistence();
+    const vehicle = Object.assign(new VehicleEntity(), persistence);
+
+    repository.save.mockResolvedValue(persistence);
+
+    await expect(typeOrmVehicleRepository.save(vehicle)).resolves.toEqual(
+      expect.objectContaining({
+        id: vehicle.id,
+        licensePlate: vehicle.licensePlate,
+        chassis: vehicle.chassis,
+        renavam: vehicle.renavam,
+        year: vehicle.year,
+        modelId: vehicle.modelId,
+        createdBy: vehicle.createdBy,
+      }),
+    );
+    expect(repository.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: vehicle.id,
+        licensePlate: vehicle.licensePlate,
+        chassis: vehicle.chassis,
+        renavam: vehicle.renavam,
+        year: vehicle.year,
+        modelId: vehicle.modelId,
+        createdBy: vehicle.createdBy,
+      }),
+    );
+  });
+
+  it('should find a vehicle by id', async () => {
+    const persistence = makePersistence();
+
+    repository.findOne.mockResolvedValue(persistence);
+
+    await expect(
+      typeOrmVehicleRepository.findById('vehicle-id'),
+    ).resolves.toEqual(expect.objectContaining({ id: 'vehicle-id' }));
+    expect(repository.findOne).toHaveBeenCalledWith({
+      where: { id: 'vehicle-id' },
+    });
+  });
+
+  it('should return null when vehicle is not found by id', async () => {
+    repository.findOne.mockResolvedValue(null);
+
+    await expect(
+      typeOrmVehicleRepository.findById('vehicle-id'),
+    ).resolves.toBeNull();
+  });
+
+  it('should find a vehicle by license plate', async () => {
+    const persistence = makePersistence();
+
+    repository.findOne.mockResolvedValue(persistence);
+
+    await expect(
+      typeOrmVehicleRepository.findByLicensePlate('ABC1234'),
+    ).resolves.toEqual(expect.objectContaining({ licensePlate: 'ABC1234' }));
+    expect(repository.findOne).toHaveBeenCalledWith({
+      where: { licensePlate: 'ABC1234' },
+    });
+  });
+
+  it('should return null when vehicle is not found by license plate', async () => {
+    repository.findOne.mockResolvedValue(null);
+
+    await expect(
+      typeOrmVehicleRepository.findByLicensePlate('ABC1234'),
+    ).resolves.toBeNull();
+  });
+
+  it('should return true when vehicle exists by model id', async () => {
+    repository.count.mockResolvedValue(1);
+
+    await expect(
+      typeOrmVehicleRepository.existsByModelId('model-id'),
+    ).resolves.toBe(true);
+    expect(repository.count).toHaveBeenCalledWith({
+      where: { modelId: 'model-id' },
+    });
+  });
+
+  it('should return false when vehicle does not exist by model id', async () => {
+    repository.count.mockResolvedValue(0);
+
+    await expect(
+      typeOrmVehicleRepository.existsByModelId('model-id'),
+    ).resolves.toBe(false);
+  });
+
+  it('should delete a vehicle by id', async () => {
+    await expect(
+      typeOrmVehicleRepository.delete('vehicle-id'),
+    ).resolves.toBeUndefined();
+    expect(repository.delete).toHaveBeenCalledWith('vehicle-id');
+  });
+});
