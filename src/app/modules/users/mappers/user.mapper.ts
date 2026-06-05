@@ -10,6 +10,7 @@ export class UserMapper {
     persistence.name = user.name;
     persistence.email = user.email;
     persistence.password = user.password;
+    persistence.createdBy = user.createdBy;
 
     return persistence;
   }
@@ -21,6 +22,7 @@ export class UserMapper {
       persistence.name,
       persistence.email,
       persistence.password,
+      persistence.createdBy,
     );
   }
 }

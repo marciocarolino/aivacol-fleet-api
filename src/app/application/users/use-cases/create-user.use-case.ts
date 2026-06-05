@@ -35,6 +35,7 @@ export class CreateUserUseCase {
       input.name,
       input.email,
       hashedPassword,
+      input.email,
     );
 
     return this.userRepository.save(user);
