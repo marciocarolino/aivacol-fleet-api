@@ -6,4 +6,6 @@ export interface UserRepository {
   findById(id: string): Promise<UserEntity | null>;
 
   findByEmail(email: string): Promise<UserEntity | null>;
+
+  delete(id: string): Promise<void>;
 }

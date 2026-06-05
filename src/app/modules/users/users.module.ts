@@ -8,6 +8,7 @@ import { CreateUserUseCase } from '../../application/users/use-cases/create-user
 import { UsersController } from '../../presentation/users/controllers/users.controller';
 import { GetUserByIdUseCase } from '../../application/users/use-cases/get-user-by-id.use-case';
 import { GetUserByEmailUseCase } from '../../application/users/use-cases/get-user-by-email.use-case';
+import { DeleteUserUseCase } from '../../application/users/use-cases/delete-user.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserTypeOrmEntity])],
@@ -18,6 +19,7 @@ import { GetUserByEmailUseCase } from '../../application/users/use-cases/get-use
     CreateUserUseCase,
     GetUserByIdUseCase,
     GetUserByEmailUseCase,
+    DeleteUserUseCase,
 
     {
       provide: 'UserRepository',

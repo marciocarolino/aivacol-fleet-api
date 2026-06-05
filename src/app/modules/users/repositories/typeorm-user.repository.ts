@@ -46,4 +46,8 @@ export class TypeOrmUserRepository implements UserRepository {
 
     return UserMapper.toDomain(user);
   }
+
+  async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
+  }
 }

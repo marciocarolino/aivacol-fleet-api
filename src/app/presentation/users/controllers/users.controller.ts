@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -13,6 +14,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserUseCase } from '../../../application/users/use-cases/create-user.use-case';
 import { GetUserByIdUseCase } from '../../../application/users/use-cases/get-user-by-id.use-case';
 import { GetUserByEmailUseCase } from '../../../application/users/use-cases/get-user-by-email.use-case';
+import { DeleteUserUseCase } from '../../../application/users/use-cases/delete-user.use-case';
 
 import { CreateUserDto } from '../dtos/create-user.dto';
 
@@ -26,6 +28,7 @@ export class UsersController {
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
     private readonly getUserByEmailUseCase: GetUserByEmailUseCase,
+    private readonly deleteUserUseCase: DeleteUserUseCase,
   ) {}
 
   @Post()
@@ -95,5 +98,28 @@ export class UsersController {
     });
 
     return UserResponseMapper.toResponse(user);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Delete user by id',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'User id',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'User deleted successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  async delete(@Param('id') id: string): Promise<void> {
+    await this.deleteUserUseCase.execute({
+      id,
+    });
   }
 }
