@@ -1,0 +1,4 @@
+export class ModelResponse {
+  id: string;
+  name: string;
+}
