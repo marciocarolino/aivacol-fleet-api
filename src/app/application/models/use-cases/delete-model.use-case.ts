@@ -5,12 +5,15 @@ import type { ModelRepository } from '../../../domain/models/repositories/model.
 import type { DeleteModelInput } from '../inputs/delete-model.input';
 
 import { AppException } from '../../../shared/exceptions/app.exception';
+import { RedisCacheService } from '../../../modules/cache/services/redis-cache.service';
 
 @Injectable()
 export class DeleteModelUseCase {
   constructor(
     @Inject('ModelRepository')
     private readonly modelRepository: ModelRepository,
+
+    private readonly redisCacheService: RedisCacheService,
   ) {}
 
   async execute(input: DeleteModelInput): Promise<void> {
@@ -21,5 +24,7 @@ export class DeleteModelUseCase {
     }
 
     await this.modelRepository.delete(input.id);
+
+    await this.redisCacheService.delete(`model:${input.id}`);
   }
 }
