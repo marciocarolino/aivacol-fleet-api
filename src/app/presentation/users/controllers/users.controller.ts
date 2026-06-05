@@ -10,7 +10,13 @@ import {
   Put,
 } from '@nestjs/common';
 
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CreateUserUseCase } from '../../../application/users/use-cases/create-user.use-case';
 import { GetUserByIdUseCase } from '../../../application/users/use-cases/get-user-by-id.use-case';
@@ -23,7 +29,9 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 
 import { UserResponseMapper } from '../mappers/user-response.mapper';
 import { EmailValidationPipe } from '../../../shared/pipes/email-validation.pipe';
+import { Public } from '../../../modules/auth/decorators/public.decorator';
 
+@ApiBearerAuth()
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
@@ -36,6 +44,7 @@ export class UsersController {
   ) {}
 
   @Post()
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Create a new user',
