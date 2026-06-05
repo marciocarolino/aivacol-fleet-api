@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './app/modules/users/users.module';
 import AppDataSource from './config/data-source';
 import { AuthModule } from './app/modules/auth/auth.module';
+import { ModelsModule } from './app/modules/models/models.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from './app/modules/auth/auth.module';
     TypeOrmModule.forRoot(AppDataSource.options),
     AuthModule,
     UsersModule,
+    ModelsModule,
   ],
   controllers: [],
   providers: [
