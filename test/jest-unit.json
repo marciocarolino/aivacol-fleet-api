@@ -1,0 +1,15 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "testEnvironment": "node",
+  "testRegex": "test/.*\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "collectCoverageFrom": [
+    "src/app/**/*.(t|j)s",
+    "!src/app/**/*.module.ts",
+    "!src/app/**/*.typeorm-entity.ts"
+  ],
+  "coverageDirectory": "coverage/unit"
+}
