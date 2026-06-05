@@ -23,6 +23,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 
 import { UserResponseMapper } from '../mappers/user-response.mapper';
 import { EmailValidationPipe } from '../../../shared/pipes/email-validation.pipe';
+import { Public } from '../../../modules/auth/decorators/public.decorator';
 
 @ApiTags('Users')
 @Controller('users')
@@ -36,6 +37,7 @@ export class UsersController {
   ) {}
 
   @Post()
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Create a new user',

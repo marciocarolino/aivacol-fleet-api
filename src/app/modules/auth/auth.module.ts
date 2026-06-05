@@ -8,6 +8,9 @@ import { LoginUseCase } from '../../application/auth/use-cases/login.use-case';
 import { JwtTokenService } from './services/jwt-token.service';
 import { AuthController } from '../../presentation/auth/controllers/auth.controller';
 
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+
 const tokenServiceProvider = {
   provide: 'TokenService',
   useExisting: JwtTokenService,
@@ -25,7 +28,13 @@ const tokenServiceProvider = {
     }),
   ],
   controllers: [AuthController],
-  providers: [JwtTokenService, LoginUseCase, tokenServiceProvider],
+  providers: [
+    JwtTokenService,
+    JwtStrategy,
+    LoginUseCase,
+    JwtAuthGuard,
+    tokenServiceProvider,
+  ],
   exports: [tokenServiceProvider, LoginUseCase],
 })
 export class AuthModule {}

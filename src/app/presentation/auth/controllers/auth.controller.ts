@@ -5,6 +5,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginUseCase } from '../../../application/auth/use-cases/login.use-case';
 
 import { LoginDto } from '../dtos/login.dto';
+import { Public } from '../../../modules/auth/decorators/public.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -12,6 +13,7 @@ export class AuthController {
   constructor(private readonly loginUseCase: LoginUseCase) {}
 
   @Post('login')
+  @Public()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Authenticate user',
