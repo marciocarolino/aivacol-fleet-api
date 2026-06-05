@@ -22,6 +22,11 @@ describe('CreateVehicleUseCase', () => {
     findByName: jest.fn(),
     delete: jest.fn(),
   };
+  const redisCacheService = {
+    get: jest.fn(),
+    set: jest.fn(),
+    delete: jest.fn(),
+  };
 
   const input = {
     licensePlate: 'ABC1234',
@@ -36,7 +41,11 @@ describe('CreateVehicleUseCase', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useCase = new CreateVehicleUseCase(vehicleRepository, modelRepository);
+    useCase = new CreateVehicleUseCase(
+      vehicleRepository,
+      modelRepository,
+      redisCacheService as never,
+    );
   });
 
   it('should create a vehicle when model exists and license plate is available', async () => {
@@ -62,6 +71,7 @@ describe('CreateVehicleUseCase', () => {
         ...input,
       }),
     );
+    expect(redisCacheService.delete).toHaveBeenCalledWith('vehicles:list');
   });
 
   it('should throw not found when model does not exist', async () => {
@@ -77,6 +87,7 @@ describe('CreateVehicleUseCase', () => {
 
     expect(vehicleRepository.findByLicensePlate).not.toHaveBeenCalled();
     expect(vehicleRepository.save).not.toHaveBeenCalled();
+    expect(redisCacheService.delete).not.toHaveBeenCalled();
   });
 
   it('should throw conflict when vehicle license plate already exists', async () => {
@@ -94,5 +105,6 @@ describe('CreateVehicleUseCase', () => {
     });
 
     expect(vehicleRepository.save).not.toHaveBeenCalled();
+    expect(redisCacheService.delete).not.toHaveBeenCalled();
   });
 });

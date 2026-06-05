@@ -18,6 +18,11 @@ describe('UpdateVehicleUseCase', () => {
     findByName: jest.fn(),
     delete: jest.fn(),
   };
+  const redisCacheService = {
+    get: jest.fn(),
+    set: jest.fn(),
+    delete: jest.fn(),
+  };
 
   const input = {
     id: 'vehicle-id',
@@ -32,7 +37,11 @@ describe('UpdateVehicleUseCase', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useCase = new UpdateVehicleUseCase(vehicleRepository, modelRepository);
+    useCase = new UpdateVehicleUseCase(
+      vehicleRepository,
+      modelRepository,
+      redisCacheService as never,
+    );
   });
 
   function makeVehicle(): VehicleEntity {
@@ -65,6 +74,8 @@ describe('UpdateVehicleUseCase', () => {
     expect(vehicleRepository.save).toHaveBeenCalledWith(
       expect.objectContaining(updatedVehicle),
     );
+    expect(redisCacheService.delete).toHaveBeenCalledWith('vehicle:vehicle-id');
+    expect(redisCacheService.delete).toHaveBeenCalledWith('vehicles:list');
   });
 
   it('should allow keeping the same license plate from the same vehicle', async () => {
@@ -80,6 +91,8 @@ describe('UpdateVehicleUseCase', () => {
     vehicleRepository.save.mockResolvedValue(vehicle);
 
     await expect(useCase.execute(input)).resolves.toBe(vehicle);
+    expect(redisCacheService.delete).toHaveBeenCalledWith('vehicle:vehicle-id');
+    expect(redisCacheService.delete).toHaveBeenCalledWith('vehicles:list');
   });
 
   it('should throw not found when vehicle does not exist', async () => {
@@ -95,6 +108,7 @@ describe('UpdateVehicleUseCase', () => {
 
     expect(vehicleRepository.findByLicensePlate).not.toHaveBeenCalled();
     expect(vehicleRepository.save).not.toHaveBeenCalled();
+    expect(redisCacheService.delete).not.toHaveBeenCalled();
   });
 
   it('should throw conflict when license plate belongs to another vehicle', async () => {
@@ -113,6 +127,7 @@ describe('UpdateVehicleUseCase', () => {
 
     expect(modelRepository.findById).not.toHaveBeenCalled();
     expect(vehicleRepository.save).not.toHaveBeenCalled();
+    expect(redisCacheService.delete).not.toHaveBeenCalled();
   });
 
   it('should throw not found when model does not exist', async () => {
@@ -129,5 +144,6 @@ describe('UpdateVehicleUseCase', () => {
     });
 
     expect(vehicleRepository.save).not.toHaveBeenCalled();
+    expect(redisCacheService.delete).not.toHaveBeenCalled();
   });
 });

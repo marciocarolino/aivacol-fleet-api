@@ -9,6 +9,7 @@ import type { CreateVehicleInput } from '../inputs/create-vehicle.input';
 import { AppException } from '../../../shared/exceptions/app.exception';
 import { VehicleEntity } from '../../../domain/vehicles/entities/vehicle.entity';
 import type { ModelRepository } from '../../../domain/models/repositories/model.repository';
+import { RedisCacheService } from '../../../modules/cache/services/redis-cache.service';
 
 @Injectable()
 export class CreateVehicleUseCase {
@@ -18,6 +19,8 @@ export class CreateVehicleUseCase {
 
     @Inject('ModelRepository')
     private readonly modelRepository: ModelRepository,
+
+    private readonly redisCacheService: RedisCacheService,
   ) {}
 
   async execute(input: CreateVehicleInput): Promise<VehicleEntity> {
@@ -45,6 +48,10 @@ export class CreateVehicleUseCase {
     vehicle.modelId = input.modelId;
     vehicle.createdBy = input.createdBy;
 
-    return this.vehicleRepository.save(vehicle);
+    const savedVehicle = await this.vehicleRepository.save(vehicle);
+
+    await this.redisCacheService.delete('vehicles:list');
+
+    return savedVehicle;
   }
 }
