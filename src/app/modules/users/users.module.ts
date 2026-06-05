@@ -11,6 +11,16 @@ import { GetUserByEmailUseCase } from '../../application/users/use-cases/get-use
 import { DeleteUserUseCase } from '../../application/users/use-cases/delete-user.use-case';
 import { UpdateUserUseCase } from '../../application/users/use-cases/update-user.use-case';
 
+const userRepositoryProvider = {
+  provide: 'UserRepository',
+  useExisting: TypeOrmUserRepository,
+};
+
+const passwordHashProvider = {
+  provide: 'PasswordHashService',
+  useExisting: BcryptPasswordHashService,
+};
+
 @Module({
   imports: [TypeOrmModule.forFeature([UserTypeOrmEntity])],
   controllers: [UsersController],
@@ -22,16 +32,11 @@ import { UpdateUserUseCase } from '../../application/users/use-cases/update-user
     GetUserByEmailUseCase,
     DeleteUserUseCase,
     UpdateUserUseCase,
+    BcryptPasswordHashService,
 
-    {
-      provide: 'UserRepository',
-      useExisting: TypeOrmUserRepository,
-    },
-
-    {
-      provide: 'PasswordHashService',
-      useExisting: BcryptPasswordHashService,
-    },
+    userRepositoryProvider,
+    passwordHashProvider,
   ],
+  exports: [userRepositoryProvider, passwordHashProvider],
 })
 export class UsersModule {}
