@@ -6,12 +6,15 @@ import type { UpdateModelInput } from '../inputs/update-model.input';
 
 import { AppException } from '../../../shared/exceptions/app.exception';
 import { ModelEntity } from '../../../domain/models/entities/model.entity';
+import { RedisCacheService } from '../../../modules/cache/services/redis-cache.service';
 
 @Injectable()
 export class UpdateModelUseCase {
   constructor(
     @Inject('ModelRepository')
     private readonly modelRepository: ModelRepository,
+
+    private readonly redisCacheService: RedisCacheService,
   ) {}
 
   async execute(input: UpdateModelInput): Promise<ModelEntity> {
@@ -29,6 +32,10 @@ export class UpdateModelUseCase {
 
     const updatedModel = new ModelEntity(model.id, input.name, model.createdBy);
 
-    return this.modelRepository.save(updatedModel);
+    const savedModel = await this.modelRepository.save(updatedModel);
+
+    await this.redisCacheService.delete(`model:${savedModel.id}`);
+
+    return savedModel;
   }
 }

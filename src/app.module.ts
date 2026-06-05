@@ -13,6 +13,7 @@ import AppDataSource from './config/data-source';
 import { AuthModule } from './app/modules/auth/auth.module';
 import { ModelsModule } from './app/modules/models/models.module';
 import { VehiclesModule } from './app/modules/vehicles/vehicles.module';
+import { CacheModule } from './app/modules/cache/cache.module';
 
 @Module({
   imports: [
@@ -34,12 +35,15 @@ import { VehiclesModule } from './app/modules/vehicles/vehicles.module';
       envFilePath: '.env',
     }),
 
+    CacheModule,
+
     TypeOrmModule.forRoot({
       ...AppDataSource.options,
       migrations: [],
     }),
 
     AuthModule,
+
     UsersModule,
     ModelsModule,
     VehiclesModule,

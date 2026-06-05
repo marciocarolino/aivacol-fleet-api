@@ -5,12 +5,15 @@ import type { VehicleRepository } from '../../../domain/vehicles/repositories/ve
 import type { DeleteVehicleInput } from '../inputs/delete-vehicle.input';
 
 import { AppException } from '../../../shared/exceptions/app.exception';
+import { RedisCacheService } from '../../../modules/cache/services/redis-cache.service';
 
 @Injectable()
 export class DeleteVehicleUseCase {
   constructor(
     @Inject('VehicleRepository')
     private readonly vehicleRepository: VehicleRepository,
+
+    private readonly redisCacheService: RedisCacheService,
   ) {}
 
   async execute(input: DeleteVehicleInput): Promise<void> {
@@ -21,5 +24,7 @@ export class DeleteVehicleUseCase {
     }
 
     await this.vehicleRepository.delete(input.id);
+
+    await this.redisCacheService.delete(`vehicle:${input.id}`);
   }
 }
