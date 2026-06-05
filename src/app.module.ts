@@ -12,6 +12,7 @@ import { UsersModule } from './app/modules/users/users.module';
 import AppDataSource from './config/data-source';
 import { AuthModule } from './app/modules/auth/auth.module';
 import { ModelsModule } from './app/modules/models/models.module';
+import { VehiclesModule } from './app/modules/vehicles/vehicles.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ModelsModule } from './app/modules/models/models.module';
     AuthModule,
     UsersModule,
     ModelsModule,
+    VehiclesModule,
   ],
   controllers: [],
   providers: [
