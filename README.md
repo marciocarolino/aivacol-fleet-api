@@ -54,10 +54,10 @@ O compose sobe:
 - SQL Server em `localhost:1433`
 - Redis em `localhost:6379`
 
-Depois que o SQL Server estiver pronto, execute as migrations:
+Depois que o SQL Server estiver pronto, execute migrations e seed de veiculos:
 
 ```bash
-npm run migration:run
+npm run db:setup
 ```
 
 ## Executando localmente
@@ -74,10 +74,10 @@ Suba SQL Server e Redis:
 docker compose up sqlserver redis
 ```
 
-Execute as migrations:
+Execute migrations e seed de veiculos:
 
 ```bash
-npm run migration:run
+npm run db:setup
 ```
 
 Inicie a API:
@@ -150,7 +150,15 @@ O tempo de expiracao e configurado por `REDIS_TTL`.
 
 ## Seed de veiculos
 
-O arquivo `seed_vehicles.json` contem uma base de exemplo solicitada para entrega. Os registros devem ser criados pela API depois de autenticar e cadastrar os modelos correspondentes, ou usados como referencia para carga manual em ambiente de avaliacao.
+O arquivo `seed_vehicles.json` contem a base solicitada para entrega.
+
+Para importar automaticamente os modelos e veiculos do arquivo:
+
+```bash
+npm run seed:vehicles
+```
+
+O comando `npm run db:setup` executa migrations e depois importa os veiculos do seed.
 
 ## Testes
 
@@ -218,13 +226,13 @@ npm install
 4. Subir API, SQL Server e Redis com Docker Compose:
 
 ```bash
-docker compose up --build
+docker compose up -d --build
 ```
 
-5. Em outro terminal, executar as migrations:
+5. Executar migrations e seed de veiculos:
 
 ```bash
-npm run migration:run
+npm run db:setup
 ```
 
 6. Fazer login com o usuario padrao:
@@ -239,7 +247,7 @@ password: aivacol
 7. Acessar o Swagger:
 
 ```text
-http://localhost:3000/api/docs
+http://localhost:3000/docs
 ```
 
 8. Rodar os testes unitarios:
