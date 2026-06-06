@@ -7,8 +7,10 @@ import {
   HttpStatus,
   Param,
   Post,
+  Req,
   Put,
 } from '@nestjs/common';
+import { Request } from 'express';
 
 import {
   ApiBearerAuth,
@@ -27,6 +29,13 @@ import { CreateModelDto } from '../dtos/create-model.dto';
 import { UpdateModelDto } from '../dtos/update-model.dto';
 
 import { ModelResponseMapper } from '../mappers/model-response.mapper';
+
+type AuthenticatedRequest = Request & {
+  user: {
+    userId: string;
+    email: string;
+  };
+};
 
 @ApiBearerAuth()
 @ApiTags('Models')
@@ -52,10 +61,13 @@ export class ModelsController {
     status: 409,
     description: 'Model already exists',
   })
-  async create(@Body() dto: CreateModelDto) {
+  async create(
+    @Body() dto: CreateModelDto,
+    @Req() request: AuthenticatedRequest,
+  ) {
     const model = await this.createModelUseCase.execute({
       name: dto.name,
-      createdBy: 'system',
+      createdBy: request.user.email,
     });
 
     return ModelResponseMapper.toResponse(model);

@@ -6,9 +6,16 @@ import { AppException } from '../../../../src/app/shared/exceptions/app.exceptio
 
 describe('VehiclesController', () => {
   const createVehicleUseCase = { execute: jest.fn() };
+  const listVehiclesUseCase = { execute: jest.fn() };
   const getVehicleByIdUseCase = { execute: jest.fn() };
   const updateVehicleUseCase = { execute: jest.fn() };
   const deleteVehicleUseCase = { execute: jest.fn() };
+  const authenticatedRequest = {
+    user: {
+      userId: 'user-id',
+      email: 'creator@email.com',
+    },
+  };
 
   let controller: VehiclesController;
 
@@ -16,6 +23,7 @@ describe('VehiclesController', () => {
     jest.clearAllMocks();
     controller = new VehiclesController(
       createVehicleUseCase as never,
+      listVehiclesUseCase as never,
       getVehicleByIdUseCase as never,
       updateVehicleUseCase as never,
       deleteVehicleUseCase as never,
@@ -45,7 +53,9 @@ describe('VehiclesController', () => {
 
     createVehicleUseCase.execute.mockResolvedValue(makeVehicle());
 
-    await expect(controller.create(dto)).resolves.toEqual({
+    await expect(
+      controller.create(dto, authenticatedRequest as never),
+    ).resolves.toEqual({
       id: 'vehicle-id',
       licensePlate: 'ABC1234',
       chassis: 'chassis',
@@ -55,7 +65,7 @@ describe('VehiclesController', () => {
     });
     expect(createVehicleUseCase.execute).toHaveBeenCalledWith({
       ...dto,
-      createdBy: 'system',
+      createdBy: 'creator@email.com',
     });
   });
 
@@ -72,6 +82,44 @@ describe('VehiclesController', () => {
     });
     expect(getVehicleByIdUseCase.execute).toHaveBeenCalledWith({
       id: 'vehicle-id',
+    });
+  });
+
+  it('should list vehicles with pagination and filters', async () => {
+    listVehiclesUseCase.execute.mockResolvedValue({
+      items: [makeVehicle()],
+      total: 1,
+      page: 2,
+      limit: 5,
+    });
+
+    await expect(
+      controller.findAll({
+        page: 2,
+        limit: 5,
+        renavam: 'renavam',
+        year: 2024,
+      }),
+    ).resolves.toEqual({
+      items: [
+        {
+          id: 'vehicle-id',
+          licensePlate: 'ABC1234',
+          chassis: 'chassis',
+          renavam: 'renavam',
+          year: 2024,
+          modelId: 'model-id',
+        },
+      ],
+      total: 1,
+      page: 2,
+      limit: 5,
+    });
+    expect(listVehiclesUseCase.execute).toHaveBeenCalledWith({
+      page: 2,
+      limit: 5,
+      renavam: 'renavam',
+      year: 2024,
     });
   });
 

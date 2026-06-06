@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { VehicleEntity } from '../../../../src/app/domain/vehicles/entities/vehicle.entity';
 import { VehicleTypeOrmEntity } from '../../../../src/app/modules/vehicles/persistence/vehicle.typeorm-entity';
 import { TypeOrmVehicleRepository } from '../../../../src/app/modules/vehicles/repositories/typeorm-vehicle.repository';
@@ -5,6 +6,7 @@ import { TypeOrmVehicleRepository } from '../../../../src/app/modules/vehicles/r
 describe('TypeOrmVehicleRepository', () => {
   const repository = {
     save: jest.fn(),
+    findAndCount: jest.fn(),
     findOne: jest.fn(),
     count: jest.fn(),
     delete: jest.fn(),
@@ -73,6 +75,72 @@ describe('TypeOrmVehicleRepository', () => {
     ).resolves.toEqual(expect.objectContaining({ id: 'vehicle-id' }));
     expect(repository.findOne).toHaveBeenCalledWith({
       where: { id: 'vehicle-id' },
+    });
+  });
+
+  it('should find all vehicles with pagination and combined filters', async () => {
+    const persistence = makePersistence();
+
+    repository.findAndCount.mockResolvedValue([[persistence], 1]);
+
+    await expect(
+      typeOrmVehicleRepository.findAll({
+        page: 2,
+        limit: 5,
+        filters: {
+          licensePlate: 'ABC',
+          chassis: 'chassis',
+          renavam: 'renavam',
+          year: 2024,
+          modelId: 'model-id',
+        },
+      }),
+    ).resolves.toEqual({
+      items: [expect.objectContaining({ id: 'vehicle-id' })],
+      total: 1,
+    });
+    expect(repository.findAndCount).toHaveBeenCalledWith({
+      where: {
+        licensePlate: expect.objectContaining({
+          _value: '%ABC%',
+        }),
+        chassis: expect.objectContaining({
+          _value: '%chassis%',
+        }),
+        renavam: expect.objectContaining({
+          _value: '%renavam%',
+        }),
+        year: 2024,
+        modelId: 'model-id',
+      },
+      skip: 5,
+      take: 5,
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  });
+
+  it('should find all vehicles without filters', async () => {
+    repository.findAndCount.mockResolvedValue([[], 0]);
+
+    await expect(
+      typeOrmVehicleRepository.findAll({
+        page: 1,
+        limit: 10,
+        filters: {},
+      }),
+    ).resolves.toEqual({
+      items: [],
+      total: 0,
+    });
+    expect(repository.findAndCount).toHaveBeenCalledWith({
+      where: {},
+      skip: 0,
+      take: 10,
+      order: {
+        createdAt: 'DESC',
+      },
     });
   });
 

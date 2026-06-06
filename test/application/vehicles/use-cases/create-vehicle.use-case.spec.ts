@@ -11,6 +11,7 @@ jest.mock('crypto', () => ({
 describe('CreateVehicleUseCase', () => {
   const vehicleRepository = {
     save: jest.fn(),
+    findAll: jest.fn(),
     findById: jest.fn(),
     findByLicensePlate: jest.fn(),
     existsByModelId: jest.fn(),

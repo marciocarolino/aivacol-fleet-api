@@ -11,6 +11,7 @@ import { CreateVehicleUseCase } from '../../application/vehicles/use-cases/creat
 import { GetVehicleByIdUseCase } from '../../application/vehicles/use-cases/get-vehicle-by-id.use-case';
 import { UpdateVehicleUseCase } from '../../application/vehicles/use-cases/update-vehicle.use-case';
 import { DeleteVehicleUseCase } from '../../application/vehicles/use-cases/delete-vehicle.use-case';
+import { ListVehiclesUseCase } from '../../application/vehicles/use-cases/list-vehicles.use-case';
 
 import { VehiclesController } from '../../presentation/vehicles/controller/vehicles.controller';
 
@@ -26,6 +27,7 @@ const vehicleRepositoryProvider = {
     TypeOrmVehicleRepository,
 
     CreateVehicleUseCase,
+    ListVehiclesUseCase,
     GetVehicleByIdUseCase,
     UpdateVehicleUseCase,
     DeleteVehicleUseCase,

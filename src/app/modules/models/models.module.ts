@@ -9,7 +9,7 @@ import { GetModelByIdUseCase } from '../../application/models/use-cases/get-mode
 import { UpdateModelUseCase } from '../../application/models/use-cases/update-model.use-case';
 import { DeleteModelUseCase } from '../../application/models/use-cases/delete-model.use-case';
 
-import { ModelsController } from '../../presentation/Models/controllers/models.controller';
+import { ModelsController } from '../../presentation/models/controllers/models.controller';
 
 const modelRepositoryProvider = {
   provide: 'ModelRepository',

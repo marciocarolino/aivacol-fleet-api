@@ -1,4 +1,4 @@
-import { ModelResponse } from '../../../../src/app/presentation/Models/responses/model.response';
+import { ModelResponse } from '../../../../src/app/presentation/models/responses/model.response';
 
 describe('ModelResponse', () => {
   it('should create response with assigned values', () => {
