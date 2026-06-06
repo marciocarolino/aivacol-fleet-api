@@ -239,7 +239,7 @@ password: aivacol
 7. Acessar o Swagger:
 
 ```text
-http://localhost:3000/api/docs
+http://localhost:3000/docs
 ```
 
 8. Rodar os testes unitarios:
