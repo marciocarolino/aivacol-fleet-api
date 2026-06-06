@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { ModelEntity } from '../../../../src/app/domain/models/entities/model.entity';
-import { ModelsController } from '../../../../src/app/presentation/Models/controllers/models.controller';
+import { ModelsController } from '../../../../src/app/presentation/models/controllers/models.controller';
 import { AppException } from '../../../../src/app/shared/exceptions/app.exception';
 
 describe('ModelsController', () => {
@@ -9,6 +9,12 @@ describe('ModelsController', () => {
   const getModelByIdUseCase = { execute: jest.fn() };
   const updateModelUseCase = { execute: jest.fn() };
   const deleteModelUseCase = { execute: jest.fn() };
+  const authenticatedRequest = {
+    user: {
+      userId: 'user-id',
+      email: 'creator@email.com',
+    },
+  };
 
   let controller: ModelsController;
 
@@ -24,16 +30,18 @@ describe('ModelsController', () => {
 
   it('should create a model and return response', async () => {
     createModelUseCase.execute.mockResolvedValue(
-      new ModelEntity('model-id', 'Sprinter', 'system'),
+      new ModelEntity('model-id', 'Sprinter', 'creator@email.com'),
     );
 
-    await expect(controller.create({ name: 'Sprinter' })).resolves.toEqual({
+    await expect(
+      controller.create({ name: 'Sprinter' }, authenticatedRequest as never),
+    ).resolves.toEqual({
       id: 'model-id',
       name: 'Sprinter',
     });
     expect(createModelUseCase.execute).toHaveBeenCalledWith({
       name: 'Sprinter',
-      createdBy: 'system',
+      createdBy: 'creator@email.com',
     });
   });
 

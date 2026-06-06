@@ -7,6 +7,7 @@ import { VehicleEntity } from '../../../../src/app/domain/vehicles/entities/vehi
 describe('UpdateVehicleUseCase', () => {
   const vehicleRepository = {
     save: jest.fn(),
+    findAll: jest.fn(),
     findById: jest.fn(),
     findByLicensePlate: jest.fn(),
     existsByModelId: jest.fn(),

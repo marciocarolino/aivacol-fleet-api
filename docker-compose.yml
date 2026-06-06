@@ -1,4 +1,29 @@
 services:
+  app:
+    build:
+      context: .
+      target: production
+    container_name: aivacol-fleet-api
+
+    env_file:
+      - .env
+
+    environment:
+      PORT: 3000
+      DB_HOST: sqlserver
+      DB_PORT: 1433
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+    ports:
+      - '3000:3000'
+
+    depends_on:
+      - sqlserver
+      - redis
+
+    restart: unless-stopped
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: aivacol-sqlserver

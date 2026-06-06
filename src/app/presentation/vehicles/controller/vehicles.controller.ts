@@ -7,8 +7,11 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
+  Req,
   Put,
 } from '@nestjs/common';
+import { Request } from 'express';
 
 import {
   ApiBearerAuth,
@@ -22,11 +25,20 @@ import { CreateVehicleUseCase } from '../../../application/vehicles/use-cases/cr
 import { GetVehicleByIdUseCase } from '../../../application/vehicles/use-cases/get-vehicle-by-id.use-case';
 import { UpdateVehicleUseCase } from '../../../application/vehicles/use-cases/update-vehicle.use-case';
 import { DeleteVehicleUseCase } from '../../../application/vehicles/use-cases/delete-vehicle.use-case';
+import { ListVehiclesUseCase } from '../../../application/vehicles/use-cases/list-vehicles.use-case';
 
 import { CreateVehicleDto } from '../dtos/create-vehicle.dto';
 import { UpdateVehicleDto } from '../dtos/update-vehicle.dto';
+import { ListVehiclesDto } from '../dtos/list-vehicles.dto';
 
 import { VehicleResponseMapper } from '../mappers/vehicle-response.mapper';
+
+type AuthenticatedRequest = Request & {
+  user: {
+    userId: string;
+    email: string;
+  };
+};
 
 @ApiBearerAuth()
 @ApiTags('Vehicles')
@@ -34,6 +46,7 @@ import { VehicleResponseMapper } from '../mappers/vehicle-response.mapper';
 export class VehiclesController {
   constructor(
     private readonly createVehicleUseCase: CreateVehicleUseCase,
+    private readonly listVehiclesUseCase: ListVehiclesUseCase,
     private readonly getVehicleByIdUseCase: GetVehicleByIdUseCase,
     private readonly updateVehicleUseCase: UpdateVehicleUseCase,
     private readonly deleteVehicleUseCase: DeleteVehicleUseCase,
@@ -52,13 +65,31 @@ export class VehiclesController {
     status: 409,
     description: 'Vehicle already exists',
   })
-  async create(@Body() dto: CreateVehicleDto) {
+  async create(
+    @Body() dto: CreateVehicleDto,
+    @Req() request: AuthenticatedRequest,
+  ) {
     const vehicle = await this.createVehicleUseCase.execute({
       ...dto,
-      createdBy: 'system',
+      createdBy: request.user.email,
     });
 
     return VehicleResponseMapper.toResponse(vehicle);
+  }
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'List vehicles with pagination and filters',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Vehicles listed successfully',
+  })
+  async findAll(@Query() query: ListVehiclesDto) {
+    const result = await this.listVehiclesUseCase.execute(query);
+
+    return VehicleResponseMapper.toPaginatedResponse(result);
   }
 
   @Get(':id')

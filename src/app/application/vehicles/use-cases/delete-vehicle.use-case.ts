@@ -25,6 +25,9 @@ export class DeleteVehicleUseCase {
 
     await this.vehicleRepository.delete(input.id);
 
-    await this.redisCacheService.delete(`vehicle:${input.id}`);
+    await Promise.all([
+      this.redisCacheService.delete(`vehicle:${input.id}`),
+      this.redisCacheService.delete('vehicles:list'),
+    ]);
   }
 }

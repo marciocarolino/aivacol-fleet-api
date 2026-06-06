@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+reports
+.git
+.env
+npm-debug.log
+Dockerfile
+docker-compose.yml
+nest-cli.json
+tsconfig.json
+tsconfig.build.json

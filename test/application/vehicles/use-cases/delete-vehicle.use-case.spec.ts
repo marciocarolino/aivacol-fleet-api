@@ -6,6 +6,7 @@ import { VehicleEntity } from '../../../../src/app/domain/vehicles/entities/vehi
 describe('DeleteVehicleUseCase', () => {
   const vehicleRepository = {
     save: jest.fn(),
+    findAll: jest.fn(),
     findById: jest.fn(),
     findByLicensePlate: jest.fn(),
     existsByModelId: jest.fn(),
@@ -35,6 +36,7 @@ describe('DeleteVehicleUseCase', () => {
     ).resolves.toBeUndefined();
     expect(vehicleRepository.delete).toHaveBeenCalledWith('vehicle-id');
     expect(redisCacheService.delete).toHaveBeenCalledWith('vehicle:vehicle-id');
+    expect(redisCacheService.delete).toHaveBeenCalledWith('vehicles:list');
   });
 
   it('should throw not found when vehicle does not exist', async () => {

@@ -22,4 +22,39 @@ describe('VehicleResponseMapper', () => {
       modelId: vehicle.modelId,
     });
   });
+
+  it('should map paginated vehicles output to response', () => {
+    const vehicle = Object.assign(new VehicleEntity(), {
+      id: 'vehicle-id',
+      licensePlate: 'ABC1234',
+      chassis: 'chassis',
+      renavam: 'renavam',
+      year: 2024,
+      modelId: 'model-id',
+      createdBy: 'system',
+    });
+
+    expect(
+      VehicleResponseMapper.toPaginatedResponse({
+        items: [vehicle],
+        total: 1,
+        page: 1,
+        limit: 10,
+      }),
+    ).toEqual({
+      items: [
+        {
+          id: 'vehicle-id',
+          licensePlate: 'ABC1234',
+          chassis: 'chassis',
+          renavam: 'renavam',
+          year: 2024,
+          modelId: 'model-id',
+        },
+      ],
+      total: 1,
+      page: 1,
+      limit: 10,
+    });
+  });
 });
