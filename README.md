@@ -1,6 +1,6 @@
 # Aivacol Fleet API
 
-API Backend para gerenciamento de modelos e veiculos, desenvolvida para o teste tecnico Backend da Aivacol.
+API Backend para gerenciamento de marcas, modelos e veiculos, desenvolvida para o teste tecnico Backend da Aivacol.
 
 ## Tecnologias
 
@@ -100,7 +100,7 @@ Use essas credenciais no endpoint de login para obter o JWT.
 Com a API rodando, acesse:
 
 ```text
-http://localhost:3000/api/docs
+http://localhost:3000/docs
 ```
 
 ## Endpoints principais
@@ -111,6 +111,10 @@ http://localhost:3000/api/docs
 - `GET /users/email/:email`
 - `PUT /users/:id`
 - `DELETE /users/:id`
+- `POST /brands`
+- `GET /brands/:id`
+- `PUT /brands/:id`
+- `DELETE /brands/:id`
 - `POST /models`
 - `GET /models/:id`
 - `PUT /models/:id`
@@ -137,6 +141,32 @@ Exemplo:
 GET /vehicles?page=1&limit=10&renavam=12345678901&year=2024
 ```
 
+## Modelagem
+
+A relacao principal da frota segue:
+
+```text
+brands 1:N models
+models 1:N vehicles
+```
+
+Campos principais:
+
+- `brands`: `id`, `name`, `created_at`, `updated_at`, `created_by`.
+- `models`: `id`, `name`, `brand_id`, `created_at`, `updated_at`, `created_by`.
+- `vehicles`: `id`, `license_plate`, `chassis`, `renavam`, `year`, `model_id`, `created_at`, `updated_at`, `created_by`.
+
+Campos unicos:
+
+- `users.email`
+- `brands.name`
+- `models.name`
+- `vehicles.license_plate`
+- `vehicles.chassis`
+- `vehicles.renavam`
+
+As regras de unicidade sao validadas nos casos de uso antes da persistencia e tambem protegidas por constraints no banco.
+
 ## Redis Cache
 
 As consultas de veiculos utilizam Redis:
@@ -150,9 +180,9 @@ O tempo de expiracao e configurado por `REDIS_TTL`.
 
 ## Seed de veiculos
 
-O arquivo `seed_vehicles.json` contem a base solicitada para entrega.
+O arquivo `seed_vehicles.json` contem a base solicitada para entrega, incluindo marca, modelo e veiculo.
 
-Para importar automaticamente os modelos e veiculos do arquivo:
+Para importar automaticamente as marcas, modelos e veiculos do arquivo:
 
 ```bash
 npm run seed:vehicles
@@ -200,7 +230,7 @@ Reverter ultima migration:
 npm run migration:revert
 ```
 
-As migrations criam as tabelas `users`, `models`, `vehicles`, a chave estrangeira entre `vehicles` e `models`, e o usuario padrao `aivacol`.
+As migrations criam as tabelas `users`, `brands`, `models`, `vehicles`, a chave estrangeira entre `models` e `brands`, a chave estrangeira entre `vehicles` e `models`, e o usuario padrao `aivacol`.
 
 ## Sequencia sugerida para avaliacao
 

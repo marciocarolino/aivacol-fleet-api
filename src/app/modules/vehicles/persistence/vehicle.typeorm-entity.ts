@@ -17,11 +17,13 @@ export class VehicleTypeOrmEntity extends BaseTypeOrmEntity {
 
   @Column({
     length: 255,
+    unique: true,
   })
   chassis: string;
 
   @Column({
     length: 255,
+    unique: true,
   })
   renavam: string;
 

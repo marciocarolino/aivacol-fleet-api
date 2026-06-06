@@ -35,6 +35,22 @@ export class UpdateVehicleUseCase {
       throw new AppException('Vehicle already exists', HttpStatus.CONFLICT);
     }
 
+    const vehicleWithSameChassis = await this.vehicleRepository.findByChassis(
+      input.chassis,
+    );
+
+    if (vehicleWithSameChassis && vehicleWithSameChassis.id !== input.id) {
+      throw new AppException('Vehicle already exists', HttpStatus.CONFLICT);
+    }
+
+    const vehicleWithSameRenavam = await this.vehicleRepository.findByRenavam(
+      input.renavam,
+    );
+
+    if (vehicleWithSameRenavam && vehicleWithSameRenavam.id !== input.id) {
+      throw new AppException('Vehicle already exists', HttpStatus.CONFLICT);
+    }
+
     const model = await this.modelRepository.findById(input.modelId);
 
     if (!model) {

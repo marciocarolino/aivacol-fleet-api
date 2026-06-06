@@ -3,11 +3,12 @@ import { ModelResponseMapper } from '../../../../src/app/presentation/models/map
 
 describe('ModelResponseMapper', () => {
   it('should map model domain entity to response', () => {
-    const model = new ModelEntity('model-id', 'Sprinter', 'system');
+    const model = new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system');
 
     expect(ModelResponseMapper.toResponse(model)).toEqual({
       id: model.id,
       name: model.name,
+      brandId: model.brandId,
     });
   });
 });

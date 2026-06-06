@@ -4,8 +4,11 @@
     "chassis": "9BWZZZ377VT004251",
     "renavam": "12345678901",
     "year": 2024,
+    "brand": {
+      "name": "Mercedes-Benz"
+    },
     "model": {
-      "name": "Aivacol Cargo 1.0"
+      "name": "Sprinter"
     }
   },
   {
@@ -13,8 +16,11 @@
     "chassis": "8A1BB8V05FL123456",
     "renavam": "23456789012",
     "year": 2023,
+    "brand": {
+      "name": "Volkswagen"
+    },
     "model": {
-      "name": "Aivacol Urban 2.0"
+      "name": "Delivery Express"
     }
   },
   {
@@ -22,8 +28,11 @@
     "chassis": "3FAHP0HA6AR123456",
     "renavam": "34567890123",
     "year": 2022,
+    "brand": {
+      "name": "Fiat"
+    },
     "model": {
-      "name": "Aivacol Van 1.6"
+      "name": "Ducato"
     }
   },
   {
@@ -31,8 +40,11 @@
     "chassis": "1HGCM82633A123456",
     "renavam": "45678901234",
     "year": 2021,
+    "brand": {
+      "name": "Renault"
+    },
     "model": {
-      "name": "Aivacol Pickup 2.4"
+      "name": "Master"
     }
   },
   {
@@ -40,8 +52,11 @@
     "chassis": "WBA3A5C53DF123456",
     "renavam": "56789012345",
     "year": 2020,
+    "brand": {
+      "name": "Ford"
+    },
     "model": {
-      "name": "Aivacol Sedan 1.8"
+      "name": "Transit"
     }
   }
 ]

@@ -8,6 +8,7 @@ describe('GetModelByIdUseCase', () => {
     save: jest.fn(),
     findById: jest.fn(),
     findByName: jest.fn(),
+    existsByBrandId: jest.fn(),
     delete: jest.fn(),
   };
   const redisCacheService = {
@@ -27,7 +28,7 @@ describe('GetModelByIdUseCase', () => {
   });
 
   it('should return cached model when cache exists', async () => {
-    const model = new ModelEntity('model-id', 'Sprinter', 'system');
+    const model = new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system');
 
     redisCacheService.get.mockResolvedValue(model);
 
@@ -37,7 +38,7 @@ describe('GetModelByIdUseCase', () => {
   });
 
   it('should return a model from repository and cache it when cache is empty', async () => {
-    const model = new ModelEntity('model-id', 'Sprinter', 'system');
+    const model = new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system');
 
     redisCacheService.get.mockResolvedValue(null);
     modelRepository.findById.mockResolvedValue(model);

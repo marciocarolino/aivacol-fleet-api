@@ -8,6 +8,7 @@ export class ModelMapper {
 
     persistence.id = model.id;
     persistence.name = model.name;
+    persistence.brandId = model.brandId;
     persistence.createdBy = model.createdBy;
 
     return persistence;
@@ -17,6 +18,7 @@ export class ModelMapper {
     return new ModelEntity(
       persistence.id,
       persistence.name,
+      persistence.brandId,
       persistence.createdBy,
     );
   }

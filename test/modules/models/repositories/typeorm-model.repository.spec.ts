@@ -6,6 +6,7 @@ describe('TypeOrmModelRepository', () => {
   const repository = {
     save: jest.fn(),
     findOne: jest.fn(),
+    count: jest.fn(),
     delete: jest.fn(),
   };
 
@@ -20,13 +21,14 @@ describe('TypeOrmModelRepository', () => {
     const persistence = new ModelTypeOrmEntity();
     persistence.id = 'model-id';
     persistence.name = 'Sprinter';
+    persistence.brandId = 'brand-id';
     persistence.createdBy = 'system';
 
     return persistence;
   }
 
   it('should save a model using TypeORM repository', async () => {
-    const model = new ModelEntity('model-id', 'Sprinter', 'system');
+    const model = new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system');
     const persistence = makePersistence();
 
     repository.save.mockResolvedValue(persistence);
@@ -43,7 +45,12 @@ describe('TypeOrmModelRepository', () => {
     repository.findOne.mockResolvedValue(persistence);
 
     await expect(typeOrmModelRepository.findById('model-id')).resolves.toEqual(
-      new ModelEntity(persistence.id, persistence.name, persistence.createdBy),
+      new ModelEntity(
+        persistence.id,
+        persistence.name,
+        persistence.brandId,
+        persistence.createdBy,
+      ),
     );
     expect(repository.findOne).toHaveBeenCalledWith({
       where: { id: 'model-id' },
@@ -66,7 +73,12 @@ describe('TypeOrmModelRepository', () => {
     await expect(
       typeOrmModelRepository.findByName(persistence.name),
     ).resolves.toEqual(
-      new ModelEntity(persistence.id, persistence.name, persistence.createdBy),
+      new ModelEntity(
+        persistence.id,
+        persistence.name,
+        persistence.brandId,
+        persistence.createdBy,
+      ),
     );
     expect(repository.findOne).toHaveBeenCalledWith({
       where: { name: persistence.name },
@@ -88,5 +100,16 @@ describe('TypeOrmModelRepository', () => {
       typeOrmModelRepository.delete('model-id'),
     ).resolves.toBeUndefined();
     expect(repository.delete).toHaveBeenCalledWith('model-id');
+  });
+
+  it('should check if a brand has models', async () => {
+    repository.count.mockResolvedValue(1);
+
+    await expect(
+      typeOrmModelRepository.existsByBrandId('brand-id'),
+    ).resolves.toBe(true);
+    expect(repository.count).toHaveBeenCalledWith({
+      where: { brandId: 'brand-id' },
+    });
   });
 });

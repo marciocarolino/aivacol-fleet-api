@@ -38,6 +38,22 @@ export class CreateVehicleUseCase {
       throw new AppException('Vehicle already exists', HttpStatus.CONFLICT);
     }
 
+    const vehicleWithSameChassis = await this.vehicleRepository.findByChassis(
+      input.chassis,
+    );
+
+    if (vehicleWithSameChassis) {
+      throw new AppException('Vehicle already exists', HttpStatus.CONFLICT);
+    }
+
+    const vehicleWithSameRenavam = await this.vehicleRepository.findByRenavam(
+      input.renavam,
+    );
+
+    if (vehicleWithSameRenavam) {
+      throw new AppException('Vehicle already exists', HttpStatus.CONFLICT);
+    }
+
     const vehicle = new VehicleEntity();
 
     vehicle.id = randomUUID();

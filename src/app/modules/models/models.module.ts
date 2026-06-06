@@ -10,6 +10,7 @@ import { UpdateModelUseCase } from '../../application/models/use-cases/update-mo
 import { DeleteModelUseCase } from '../../application/models/use-cases/delete-model.use-case';
 
 import { ModelsController } from '../../presentation/models/controllers/models.controller';
+import { BrandsModule } from '../brands/brands.module';
 
 const modelRepositoryProvider = {
   provide: 'ModelRepository',
@@ -17,7 +18,7 @@ const modelRepositoryProvider = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ModelTypeOrmEntity])],
+  imports: [TypeOrmModule.forFeature([ModelTypeOrmEntity]), BrandsModule],
   controllers: [ModelsController],
   providers: [
     TypeOrmModelRepository,

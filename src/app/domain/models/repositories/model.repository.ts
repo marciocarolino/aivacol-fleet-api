@@ -7,5 +7,7 @@ export interface ModelRepository {
 
   findByName(name: string): Promise<ModelEntity | null>;
 
+  existsByBrandId(brandId: string): Promise<boolean>;
+
   delete(id: string): Promise<void>;
 }

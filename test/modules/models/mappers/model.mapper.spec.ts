@@ -4,7 +4,7 @@ import { ModelTypeOrmEntity } from '../../../../src/app/modules/models/persisten
 
 describe('ModelMapper', () => {
   it('should map model domain entity to persistence entity', () => {
-    const model = new ModelEntity('model-id', 'Sprinter', 'system');
+    const model = new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system');
 
     const persistence = ModelMapper.toPersistence(model);
 
@@ -13,6 +13,7 @@ describe('ModelMapper', () => {
       expect.objectContaining({
         id: model.id,
         name: model.name,
+        brandId: model.brandId,
         createdBy: model.createdBy,
       }),
     );
@@ -22,12 +23,18 @@ describe('ModelMapper', () => {
     const persistence = new ModelTypeOrmEntity();
     persistence.id = 'model-id';
     persistence.name = 'Sprinter';
+    persistence.brandId = 'brand-id';
     persistence.createdBy = 'system';
 
     const model = ModelMapper.toDomain(persistence);
 
     expect(model).toEqual(
-      new ModelEntity(persistence.id, persistence.name, persistence.createdBy),
+      new ModelEntity(
+        persistence.id,
+        persistence.name,
+        persistence.brandId,
+        persistence.createdBy,
+      ),
     );
   });
 });

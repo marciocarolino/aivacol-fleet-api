@@ -173,6 +173,48 @@ describe('TypeOrmVehicleRepository', () => {
     ).resolves.toBeNull();
   });
 
+  it('should find a vehicle by chassis', async () => {
+    const persistence = makePersistence();
+
+    repository.findOne.mockResolvedValue(persistence);
+
+    await expect(
+      typeOrmVehicleRepository.findByChassis('chassis'),
+    ).resolves.toEqual(expect.objectContaining({ chassis: 'chassis' }));
+    expect(repository.findOne).toHaveBeenCalledWith({
+      where: { chassis: 'chassis' },
+    });
+  });
+
+  it('should return null when vehicle is not found by chassis', async () => {
+    repository.findOne.mockResolvedValue(null);
+
+    await expect(
+      typeOrmVehicleRepository.findByChassis('chassis'),
+    ).resolves.toBeNull();
+  });
+
+  it('should find a vehicle by renavam', async () => {
+    const persistence = makePersistence();
+
+    repository.findOne.mockResolvedValue(persistence);
+
+    await expect(
+      typeOrmVehicleRepository.findByRenavam('renavam'),
+    ).resolves.toEqual(expect.objectContaining({ renavam: 'renavam' }));
+    expect(repository.findOne).toHaveBeenCalledWith({
+      where: { renavam: 'renavam' },
+    });
+  });
+
+  it('should return null when vehicle is not found by renavam', async () => {
+    repository.findOne.mockResolvedValue(null);
+
+    await expect(
+      typeOrmVehicleRepository.findByRenavam('renavam'),
+    ).resolves.toBeNull();
+  });
+
   it('should return true when vehicle exists by model id', async () => {
     repository.count.mockResolvedValue(1);
 

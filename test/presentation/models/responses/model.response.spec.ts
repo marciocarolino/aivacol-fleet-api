@@ -6,10 +6,12 @@ describe('ModelResponse', () => {
 
     response.id = 'model-id';
     response.name = 'Sprinter';
+    response.brandId = 'brand-id';
 
     expect(response).toEqual({
       id: 'model-id',
       name: 'Sprinter',
+      brandId: 'brand-id',
     });
   });
 });

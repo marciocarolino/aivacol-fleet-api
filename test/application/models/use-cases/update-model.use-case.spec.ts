@@ -1,10 +1,18 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { UpdateModelUseCase } from '../../../../src/app/application/models/use-cases/update-model.use-case';
+import { BrandEntity } from '../../../../src/app/domain/brands/entities/brand.entity';
 import { ModelEntity } from '../../../../src/app/domain/models/entities/model.entity';
 
 describe('UpdateModelUseCase', () => {
   const modelRepository = {
+    save: jest.fn(),
+    findById: jest.fn(),
+    findByName: jest.fn(),
+    existsByBrandId: jest.fn(),
+    delete: jest.fn(),
+  };
+  const brandRepository = {
     save: jest.fn(),
     findById: jest.fn(),
     findByName: jest.fn(),
@@ -19,6 +27,7 @@ describe('UpdateModelUseCase', () => {
   const input = {
     id: 'model-id',
     name: 'Updated model',
+    brandId: 'brand-id',
   };
 
   let useCase: UpdateModelUseCase;
@@ -27,15 +36,29 @@ describe('UpdateModelUseCase', () => {
     jest.clearAllMocks();
     useCase = new UpdateModelUseCase(
       modelRepository,
+      brandRepository,
       redisCacheService as never,
     );
   });
 
   it('should update a model when it exists and name is available', async () => {
-    const model = new ModelEntity(input.id, 'Old model', 'system');
-    const updatedModel = new ModelEntity(input.id, input.name, model.createdBy);
+    const model = new ModelEntity(
+      input.id,
+      'Old model',
+      'old-brand-id',
+      'system',
+    );
+    const updatedModel = new ModelEntity(
+      input.id,
+      input.name,
+      input.brandId,
+      model.createdBy,
+    );
 
     modelRepository.findById.mockResolvedValue(model);
+    brandRepository.findById.mockResolvedValue(
+      new BrandEntity(input.brandId, 'Mercedes-Benz', 'system'),
+    );
     modelRepository.findByName.mockResolvedValue(null);
     modelRepository.save.mockResolvedValue(updatedModel);
 
@@ -47,9 +70,17 @@ describe('UpdateModelUseCase', () => {
   });
 
   it('should allow keeping the same name from the same model', async () => {
-    const model = new ModelEntity(input.id, input.name, 'system');
+    const model = new ModelEntity(
+      input.id,
+      input.name,
+      input.brandId,
+      'system',
+    );
 
     modelRepository.findById.mockResolvedValue(model);
+    brandRepository.findById.mockResolvedValue(
+      new BrandEntity(input.brandId, 'Mercedes-Benz', 'system'),
+    );
     modelRepository.findByName.mockResolvedValue(model);
     modelRepository.save.mockResolvedValue(model);
 
@@ -71,12 +102,33 @@ describe('UpdateModelUseCase', () => {
     expect(modelRepository.save).not.toHaveBeenCalled();
   });
 
+  it('should throw not found when brand does not exist', async () => {
+    modelRepository.findById.mockResolvedValue(
+      new ModelEntity(input.id, 'Old model', 'old-brand-id', 'system'),
+    );
+    brandRepository.findById.mockResolvedValue(null);
+
+    await expect(useCase.execute(input)).rejects.toMatchObject({
+      response: {
+        success: false,
+        message: 'Brand not found',
+        statusCode: HttpStatus.NOT_FOUND,
+      },
+    });
+
+    expect(modelRepository.findByName).not.toHaveBeenCalled();
+    expect(modelRepository.save).not.toHaveBeenCalled();
+  });
+
   it('should throw conflict when name belongs to another model', async () => {
     modelRepository.findById.mockResolvedValue(
-      new ModelEntity(input.id, 'Old model', 'system'),
+      new ModelEntity(input.id, 'Old model', 'old-brand-id', 'system'),
+    );
+    brandRepository.findById.mockResolvedValue(
+      new BrandEntity(input.brandId, 'Mercedes-Benz', 'system'),
     );
     modelRepository.findByName.mockResolvedValue(
-      new ModelEntity('another-id', input.name, 'system'),
+      new ModelEntity('another-id', input.name, input.brandId, 'system'),
     );
 
     await expect(useCase.execute(input)).rejects.toMatchObject({
