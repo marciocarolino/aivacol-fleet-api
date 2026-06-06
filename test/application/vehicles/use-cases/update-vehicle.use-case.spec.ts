@@ -10,6 +10,8 @@ describe('UpdateVehicleUseCase', () => {
     findAll: jest.fn(),
     findById: jest.fn(),
     findByLicensePlate: jest.fn(),
+    findByChassis: jest.fn(),
+    findByRenavam: jest.fn(),
     existsByModelId: jest.fn(),
     delete: jest.fn(),
   };
@@ -66,8 +68,10 @@ describe('UpdateVehicleUseCase', () => {
 
     vehicleRepository.findById.mockResolvedValue(vehicle);
     vehicleRepository.findByLicensePlate.mockResolvedValue(null);
+    vehicleRepository.findByChassis.mockResolvedValue(null);
+    vehicleRepository.findByRenavam.mockResolvedValue(null);
     modelRepository.findById.mockResolvedValue(
-      new ModelEntity('model-id', 'Sprinter', 'system'),
+      new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system'),
     );
     vehicleRepository.save.mockResolvedValue(updatedVehicle);
 
@@ -86,8 +90,10 @@ describe('UpdateVehicleUseCase', () => {
 
     vehicleRepository.findById.mockResolvedValue(vehicle);
     vehicleRepository.findByLicensePlate.mockResolvedValue(vehicle);
+    vehicleRepository.findByChassis.mockResolvedValue(vehicle);
+    vehicleRepository.findByRenavam.mockResolvedValue(vehicle);
     modelRepository.findById.mockResolvedValue(
-      new ModelEntity('model-id', 'Sprinter', 'system'),
+      new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system'),
     );
     vehicleRepository.save.mockResolvedValue(vehicle);
 
@@ -108,6 +114,8 @@ describe('UpdateVehicleUseCase', () => {
     });
 
     expect(vehicleRepository.findByLicensePlate).not.toHaveBeenCalled();
+    expect(vehicleRepository.findByChassis).not.toHaveBeenCalled();
+    expect(vehicleRepository.findByRenavam).not.toHaveBeenCalled();
     expect(vehicleRepository.save).not.toHaveBeenCalled();
     expect(redisCacheService.delete).not.toHaveBeenCalled();
   });
@@ -131,9 +139,53 @@ describe('UpdateVehicleUseCase', () => {
     expect(redisCacheService.delete).not.toHaveBeenCalled();
   });
 
+  it('should throw conflict when chassis belongs to another vehicle', async () => {
+    vehicleRepository.findById.mockResolvedValue(makeVehicle());
+    vehicleRepository.findByLicensePlate.mockResolvedValue(null);
+    vehicleRepository.findByChassis.mockResolvedValue(
+      Object.assign(new VehicleEntity(), { id: 'another-vehicle-id' }),
+    );
+
+    await expect(useCase.execute(input)).rejects.toMatchObject({
+      response: {
+        success: false,
+        message: 'Vehicle already exists',
+        statusCode: HttpStatus.CONFLICT,
+      },
+    });
+
+    expect(vehicleRepository.findByRenavam).not.toHaveBeenCalled();
+    expect(modelRepository.findById).not.toHaveBeenCalled();
+    expect(vehicleRepository.save).not.toHaveBeenCalled();
+    expect(redisCacheService.delete).not.toHaveBeenCalled();
+  });
+
+  it('should throw conflict when renavam belongs to another vehicle', async () => {
+    vehicleRepository.findById.mockResolvedValue(makeVehicle());
+    vehicleRepository.findByLicensePlate.mockResolvedValue(null);
+    vehicleRepository.findByChassis.mockResolvedValue(null);
+    vehicleRepository.findByRenavam.mockResolvedValue(
+      Object.assign(new VehicleEntity(), { id: 'another-vehicle-id' }),
+    );
+
+    await expect(useCase.execute(input)).rejects.toMatchObject({
+      response: {
+        success: false,
+        message: 'Vehicle already exists',
+        statusCode: HttpStatus.CONFLICT,
+      },
+    });
+
+    expect(modelRepository.findById).not.toHaveBeenCalled();
+    expect(vehicleRepository.save).not.toHaveBeenCalled();
+    expect(redisCacheService.delete).not.toHaveBeenCalled();
+  });
+
   it('should throw not found when model does not exist', async () => {
     vehicleRepository.findById.mockResolvedValue(makeVehicle());
     vehicleRepository.findByLicensePlate.mockResolvedValue(null);
+    vehicleRepository.findByChassis.mockResolvedValue(null);
+    vehicleRepository.findByRenavam.mockResolvedValue(null);
     modelRepository.findById.mockResolvedValue(null);
 
     await expect(useCase.execute(input)).rejects.toMatchObject({

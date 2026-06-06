@@ -8,6 +8,7 @@ describe('DeleteModelUseCase', () => {
     save: jest.fn(),
     findById: jest.fn(),
     findByName: jest.fn(),
+    existsByBrandId: jest.fn(),
     delete: jest.fn(),
   };
   const redisCacheService = {
@@ -28,7 +29,7 @@ describe('DeleteModelUseCase', () => {
 
   it('should delete a model when it exists', async () => {
     modelRepository.findById.mockResolvedValue(
-      new ModelEntity('model-id', 'Sprinter', 'system'),
+      new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system'),
     );
     modelRepository.delete.mockResolvedValue(undefined);
 

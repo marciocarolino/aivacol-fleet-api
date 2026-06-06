@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import { UserTypeOrmEntity } from '../app/modules/users/persistence/user.typeorm-entity';
 import { ModelTypeOrmEntity } from '../app/modules/models/persistence/model.typeorm-entity';
 import { VehicleTypeOrmEntity } from '../app/modules/vehicles/persistence/vehicle.typeorm-entity';
+import { BrandTypeOrmEntity } from '../app/modules/brands/persistence/brand.typeorm-entity';
 
 const AppDataSource = new DataSource({
   type: 'mssql',
@@ -18,7 +19,12 @@ const AppDataSource = new DataSource({
 
   database: process.env.DB_DATABASE,
 
-  entities: [UserTypeOrmEntity, ModelTypeOrmEntity, VehicleTypeOrmEntity],
+  entities: [
+    UserTypeOrmEntity,
+    BrandTypeOrmEntity,
+    ModelTypeOrmEntity,
+    VehicleTypeOrmEntity,
+  ],
 
   migrations: ['src/database/migrations/*.ts'],
 

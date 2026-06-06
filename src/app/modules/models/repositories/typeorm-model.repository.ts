@@ -47,6 +47,14 @@ export class TypeOrmModelRepository implements ModelRepository {
     return ModelMapper.toDomain(model);
   }
 
+  async existsByBrandId(brandId: string): Promise<boolean> {
+    const count = await this.repository.count({
+      where: { brandId },
+    });
+
+    return count > 0;
+  }
+
   async delete(id: string): Promise<void> {
     await this.repository.delete(id);
   }

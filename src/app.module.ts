@@ -14,6 +14,7 @@ import { AuthModule } from './app/modules/auth/auth.module';
 import { ModelsModule } from './app/modules/models/models.module';
 import { VehiclesModule } from './app/modules/vehicles/vehicles.module';
 import { CacheModule } from './app/modules/cache/cache.module';
+import { BrandsModule } from './app/modules/brands/brands.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { CacheModule } from './app/modules/cache/cache.module';
     AuthModule,
 
     UsersModule,
+    BrandsModule,
     ModelsModule,
     VehiclesModule,
   ],

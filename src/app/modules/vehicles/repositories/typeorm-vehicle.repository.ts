@@ -94,6 +94,30 @@ export class TypeOrmVehicleRepository implements VehicleRepository {
     return VehicleMapper.toDomain(vehicle);
   }
 
+  async findByChassis(chassis: string): Promise<VehicleEntity | null> {
+    const vehicle = await this.repository.findOne({
+      where: { chassis },
+    });
+
+    if (!vehicle) {
+      return null;
+    }
+
+    return VehicleMapper.toDomain(vehicle);
+  }
+
+  async findByRenavam(renavam: string): Promise<VehicleEntity | null> {
+    const vehicle = await this.repository.findOne({
+      where: { renavam },
+    });
+
+    if (!vehicle) {
+      return null;
+    }
+
+    return VehicleMapper.toDomain(vehicle);
+  }
+
   async existsByModelId(modelId: string): Promise<boolean> {
     const count = await this.repository.count({
       where: { modelId },

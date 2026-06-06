@@ -67,6 +67,7 @@ export class ModelsController {
   ) {
     const model = await this.createModelUseCase.execute({
       name: dto.name,
+      brandId: dto.brandId,
       createdBy: request.user.email,
     });
 
@@ -123,6 +124,7 @@ export class ModelsController {
     const model = await this.updateModelUseCase.execute({
       id,
       name: dto.name,
+      brandId: dto.brandId,
     });
 
     return ModelResponseMapper.toResponse(model);

@@ -30,29 +30,35 @@ describe('ModelsController', () => {
 
   it('should create a model and return response', async () => {
     createModelUseCase.execute.mockResolvedValue(
-      new ModelEntity('model-id', 'Sprinter', 'creator@email.com'),
+      new ModelEntity('model-id', 'Sprinter', 'brand-id', 'creator@email.com'),
     );
 
     await expect(
-      controller.create({ name: 'Sprinter' }, authenticatedRequest as never),
+      controller.create(
+        { name: 'Sprinter', brandId: 'brand-id' },
+        authenticatedRequest as never,
+      ),
     ).resolves.toEqual({
       id: 'model-id',
       name: 'Sprinter',
+      brandId: 'brand-id',
     });
     expect(createModelUseCase.execute).toHaveBeenCalledWith({
       name: 'Sprinter',
+      brandId: 'brand-id',
       createdBy: 'creator@email.com',
     });
   });
 
   it('should find a model by id and return response', async () => {
     getModelByIdUseCase.execute.mockResolvedValue(
-      new ModelEntity('model-id', 'Sprinter', 'system'),
+      new ModelEntity('model-id', 'Sprinter', 'brand-id', 'system'),
     );
 
     await expect(controller.findById('model-id')).resolves.toEqual({
       id: 'model-id',
       name: 'Sprinter',
+      brandId: 'brand-id',
     });
     expect(getModelByIdUseCase.execute).toHaveBeenCalledWith({
       id: 'model-id',
@@ -61,18 +67,23 @@ describe('ModelsController', () => {
 
   it('should update a model and return response', async () => {
     updateModelUseCase.execute.mockResolvedValue(
-      new ModelEntity('model-id', 'Updated model', 'system'),
+      new ModelEntity('model-id', 'Updated model', 'brand-id', 'system'),
     );
 
     await expect(
-      controller.update('model-id', { name: 'Updated model' }),
+      controller.update('model-id', {
+        name: 'Updated model',
+        brandId: 'brand-id',
+      }),
     ).resolves.toEqual({
       id: 'model-id',
       name: 'Updated model',
+      brandId: 'brand-id',
     });
     expect(updateModelUseCase.execute).toHaveBeenCalledWith({
       id: 'model-id',
       name: 'Updated model',
+      brandId: 'brand-id',
     });
   });
 

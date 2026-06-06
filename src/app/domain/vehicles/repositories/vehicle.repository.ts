@@ -28,6 +28,10 @@ export interface VehicleRepository {
 
   findByLicensePlate(licensePlate: string): Promise<VehicleEntity | null>;
 
+  findByChassis(chassis: string): Promise<VehicleEntity | null>;
+
+  findByRenavam(renavam: string): Promise<VehicleEntity | null>;
+
   existsByModelId(modelId: string): Promise<boolean>;
 
   delete(id: string): Promise<void>;
