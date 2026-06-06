@@ -1,98 +1,255 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Aivacol Fleet API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API Backend para gerenciamento de modelos e veiculos, desenvolvida para o teste tecnico Backend da Aivacol.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologias
 
-## Description
+- NestJS
+- TypeORM
+- SQL Server
+- Redis Cache
+- JWT
+- Jest
+- Docker
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Arquitetura
 
-## Project setup
+O projeto segue Clean Architecture dentro de `src/app`:
 
-```bash
-$ npm install
-```
+- `domain`: entidades, contratos de repositorio e regras de dominio.
+- `application`: inputs, outputs e casos de uso.
+- `modules`: integracao com NestJS, TypeORM, mappers, repositories e providers.
+- `presentation`: controllers, DTOs, response mappers e Swagger.
 
-## Compile and run the project
+## Requisitos
+
+- Node.js 18 ou superior
+- npm
+- Docker e Docker Compose
+
+## Configuracao
+
+Crie o arquivo `.env` a partir do exemplo:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Variaveis principais:
+
+- `PORT`: porta da API.
+- `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`: conexao SQL Server.
+- `JWT_SECRET`, `JWT_EXPIRES_IN`: configuracao do JWT.
+- `REDIS_HOST`, `REDIS_PORT`, `REDIS_TTL`: configuracao do cache Redis.
+
+## Executando com Docker
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up --build
 ```
 
-## Deployment
+O compose sobe:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- API em `http://localhost:3000`
+- SQL Server em `localhost:1433`
+- Redis em `localhost:6379`
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Depois que o SQL Server estiver pronto, execute as migrations:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run migration:run
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Executando localmente
 
-## Resources
+Instale as dependencias:
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+npm install
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Suba SQL Server e Redis:
 
-## Support
+```bash
+docker compose up sqlserver redis
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Execute as migrations:
 
-## Stay in touch
+```bash
+npm run migration:run
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Inicie a API:
 
-## License
+```bash
+npm run start:dev
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Usuario padrao
+
+A migration `SeedDefaultAivacolUser1780661000000` cria o usuario padrao solicitado no teste:
+
+- Email: `aivacol@email.com`
+- Senha: `aivacol`
+
+Use essas credenciais no endpoint de login para obter o JWT.
+
+## Swagger
+
+Com a API rodando, acesse:
+
+```text
+http://localhost:3000/api/docs
+```
+
+## Endpoints principais
+
+- `POST /auth/login`
+- `POST /users`
+- `GET /users/:id`
+- `GET /users/email/:email`
+- `PUT /users/:id`
+- `DELETE /users/:id`
+- `POST /models`
+- `GET /models/:id`
+- `PUT /models/:id`
+- `DELETE /models/:id`
+- `POST /vehicles`
+- `GET /vehicles`
+- `GET /vehicles/:id`
+- `PUT /vehicles/:id`
+- `DELETE /vehicles/:id`
+
+O endpoint `GET /vehicles` suporta paginacao e filtros combinaveis:
+
+- `page`
+- `limit`
+- `licensePlate`
+- `chassis`
+- `renavam`
+- `year`
+- `modelId`
+
+Exemplo:
+
+```text
+GET /vehicles?page=1&limit=10&renavam=12345678901&year=2024
+```
+
+## Redis Cache
+
+As consultas de veiculos utilizam Redis:
+
+- `GET /vehicles/:id` usa cache por veiculo.
+- `GET /vehicles` usa cache para listagem paginada e filtrada.
+- `POST /vehicles`, `PUT /vehicles/:id` e `DELETE /vehicles/:id` invalidam automaticamente o cache de listagem.
+- `PUT /vehicles/:id` e `DELETE /vehicles/:id` invalidam tambem o cache individual do veiculo.
+
+O tempo de expiracao e configurado por `REDIS_TTL`.
+
+## Seed de veiculos
+
+O arquivo `seed_vehicles.json` contem uma base de exemplo solicitada para entrega. Os registros devem ser criados pela API depois de autenticar e cadastrar os modelos correspondentes, ou usados como referencia para carga manual em ambiente de avaliacao.
+
+## Testes
+
+Rodar testes unitarios:
+
+```bash
+npm run test:unit
+```
+
+Rodar coverage unitario:
+
+```bash
+npm run test:unit:cov
+```
+
+Rodar lint:
+
+```bash
+npm run lint
+```
+
+Rodar build:
+
+```bash
+npm run build
+```
+
+## Migrations
+
+Executar migrations:
+
+```bash
+npm run migration:run
+```
+
+Reverter ultima migration:
+
+```bash
+npm run migration:revert
+```
+
+As migrations criam as tabelas `users`, `models`, `vehicles`, a chave estrangeira entre `vehicles` e `models`, e o usuario padrao `aivacol`.
+
+## Sequencia sugerida para avaliacao
+
+1. Clonar o projeto:
+
+```bash
+git clone <url-do-repositorio>
+cd aivacol-fleet-api
+```
+
+2. Criar o arquivo de ambiente:
+
+```bash
+cp .env.example .env
+```
+
+3. Instalar as dependencias:
+
+```bash
+npm install
+```
+
+4. Subir API, SQL Server e Redis com Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+5. Em outro terminal, executar as migrations:
+
+```bash
+npm run migration:run
+```
+
+6. Fazer login com o usuario padrao:
+
+```text
+POST /auth/login
+
+email: aivacol@email.com
+password: aivacol
+```
+
+7. Acessar o Swagger:
+
+```text
+http://localhost:3000/api/docs
+```
+
+8. Rodar os testes unitarios:
+
+```bash
+npm run test:unit
+```
+
+9. Rodar o coverage unitario:
+
+```bash
+npm run test:unit:cov
+```

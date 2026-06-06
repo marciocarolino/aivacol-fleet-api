@@ -1,0 +1,47 @@
+[
+  {
+    "licensePlate": "ABC1D23",
+    "chassis": "9BWZZZ377VT004251",
+    "renavam": "12345678901",
+    "year": 2024,
+    "model": {
+      "name": "Aivacol Cargo 1.0"
+    }
+  },
+  {
+    "licensePlate": "DEF4G56",
+    "chassis": "8A1BB8V05FL123456",
+    "renavam": "23456789012",
+    "year": 2023,
+    "model": {
+      "name": "Aivacol Urban 2.0"
+    }
+  },
+  {
+    "licensePlate": "GHI7J89",
+    "chassis": "3FAHP0HA6AR123456",
+    "renavam": "34567890123",
+    "year": 2022,
+    "model": {
+      "name": "Aivacol Van 1.6"
+    }
+  },
+  {
+    "licensePlate": "JKL2M34",
+    "chassis": "1HGCM82633A123456",
+    "renavam": "45678901234",
+    "year": 2021,
+    "model": {
+      "name": "Aivacol Pickup 2.4"
+    }
+  },
+  {
+    "licensePlate": "MNO5P67",
+    "chassis": "WBA3A5C53DF123456",
+    "renavam": "56789012345",
+    "year": 2020,
+    "model": {
+      "name": "Aivacol Sedan 1.8"
+    }
+  }
+]
