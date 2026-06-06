@@ -41,6 +41,7 @@ Variaveis principais:
 - `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`: conexao SQL Server.
 - `JWT_SECRET`, `JWT_EXPIRES_IN`: configuracao do JWT.
 - `REDIS_HOST`, `REDIS_PORT`, `REDIS_TTL`: configuracao do cache Redis.
+- `CORS_ORIGIN`: origens permitidas para CORS, separadas por virgula.
 
 ## Executando com Docker
 
@@ -103,27 +104,31 @@ Com a API rodando, acesse:
 http://localhost:3000/docs
 ```
 
+O Swagger fica disponivel em ambientes diferentes de `production`.
+
 ## Endpoints principais
 
-- `POST /auth/login`
-- `POST /users`
-- `GET /users/:id`
-- `GET /users/email/:email`
-- `PUT /users/:id`
-- `DELETE /users/:id`
-- `POST /brands`
-- `GET /brands/:id`
-- `PUT /brands/:id`
-- `DELETE /brands/:id`
-- `POST /models`
-- `GET /models/:id`
-- `PUT /models/:id`
-- `DELETE /models/:id`
-- `POST /vehicles`
-- `GET /vehicles`
-- `GET /vehicles/:id`
-- `PUT /vehicles/:id`
-- `DELETE /vehicles/:id`
+A API usa o prefixo global `/api`.
+
+- `POST /api/auth/login`
+- `POST /api/users`
+- `GET /api/users/:id`
+- `GET /api/users/email/:email`
+- `PUT /api/users/:id`
+- `DELETE /api/users/:id`
+- `POST /api/brands`
+- `GET /api/brands/:id`
+- `PUT /api/brands/:id`
+- `DELETE /api/brands/:id`
+- `POST /api/models`
+- `GET /api/models/:id`
+- `PUT /api/models/:id`
+- `DELETE /api/models/:id`
+- `POST /api/vehicles`
+- `GET /api/vehicles`
+- `GET /api/vehicles/:id`
+- `PUT /api/vehicles/:id`
+- `DELETE /api/vehicles/:id`
 
 O endpoint `GET /vehicles` suporta paginacao e filtros combinaveis:
 
@@ -138,7 +143,7 @@ O endpoint `GET /vehicles` suporta paginacao e filtros combinaveis:
 Exemplo:
 
 ```text
-GET /vehicles?page=1&limit=10&renavam=12345678901&year=2024
+GET /api/vehicles?page=1&limit=10&renavam=12345678901&year=2024
 ```
 
 ## Modelagem
@@ -216,6 +221,12 @@ Rodar build:
 npm run build
 ```
 
+Rodar auditoria de dependencias para vulnerabilidades altas ou criticas:
+
+```bash
+npm run audit:high
+```
+
 ## Migrations
 
 Executar migrations:
@@ -268,7 +279,7 @@ npm run db:setup
 6. Fazer login com o usuario padrao:
 
 ```text
-POST /auth/login
+POST /api/auth/login
 
 email: aivacol@email.com
 password: aivacol
