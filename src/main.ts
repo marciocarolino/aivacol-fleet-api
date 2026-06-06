@@ -10,6 +10,14 @@ import { GlobalExceptionFilter } from './app/shared/filters/global-exception.fil
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api');
+
+  const expressInstance = app.getHttpAdapter().getInstance() as {
+    disable?: (setting: string) => void;
+  };
+
+  expressInstance.disable?.('x-powered-by');
+
   const config = new DocumentBuilder()
     .setTitle('Aivacol Fleet API')
     .setDescription('Fleet Management API')
@@ -19,12 +27,14 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('docs', app, document);
+  if (process.env.NODE_ENV !== 'production') {
+    SwaggerModule.setup('docs', app, document);
+  }
 
   app.use(helmet());
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',') || '*',
+    origin: process.env.CORS_ORIGIN?.split(',') ?? false,
     credentials: true,
   });
 
